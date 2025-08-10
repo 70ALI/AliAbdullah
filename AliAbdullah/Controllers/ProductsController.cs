@@ -62,7 +62,7 @@ namespace AliAbdullah.Controllers
 			if (product == null) return NotFound();
 
 			return View(product);
-		}
+		} 
 
 		public IActionResult Create()
 		{

@@ -1,0 +1,87 @@
+﻿@model AliAbdullah.Models.ProductFilterVm
+@{
+    ViewData["Title"] = "Products";
+    var count = Model?.Results?.Count() ?? 0;
+    var hasFilters = Model?.MinPrice != null || Model?.MaxPrice != null || Model?.From != null || Model?.To != null || Model?.ServiceProviderId != null;
+    var forceOpen = Context.Request.Query.ContainsKey("open");
+    var collapseClass = (hasFilters || forceOpen) ? "show" : "";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">@ViewData["Title"]</h1>
+    <div class="text-muted">@count result@(count == 1 ? "" : "s")</div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form asp-action="ProductFilter" method="get" class="row g-3">
+            <div class="col-6 col-md-2">
+                <label asp-for="MinPrice" class="form-label">Min Price</label>
+                <input asp-for="MinPrice" type="number" step="0.01" class="form-control" placeholder="0.00" />
+            </div>
+            <div class="col-6 col-md-2">
+                <label asp-for="MaxPrice" class="form-label">Max Price</label>
+                <input asp-for="MaxPrice" type="number" step="0.01" class="form-control" placeholder="9999.99" />
+            </div>
+            <div class="col-6 col-md-3">
+                <label asp-for="From" class="form-label">From</label>
+                <input asp-for="From" type="date" class="form-control" />
+            </div>
+            <div class="col-6 col-md-3">
+                <label asp-for="To" class="form-label">To</label>
+                <input asp-for="To" type="date" class="form-control" />
+            </div>
+            <div class="col-12 col-md-4">
+                <label asp-for="ServiceProviderId" class="form-label">Service Provider</label>
+                <select asp-for="ServiceProviderId" asp-items="ViewBag.ServiceProviderId" class="form-select">
+                    <option value="">-- All --</option>
+                </select>
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <button type="submit" name="reset" value="1" class="btn btn-outline-secondary">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model?.Results != null && Model.Results.Any())
+{
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th class="text-end">Price</th>
+                        <th>Creation Date</th>
+                        <th>Provider</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Results)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td class="text-end">@item.Price.ToString("C")</td>
+                            <td>@item.CreationDate.ToString("yyyy-MM-dd")</td>
+                            <td>@item.ServiceProvider?.Name</td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                    <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">No products found.</div>
+}

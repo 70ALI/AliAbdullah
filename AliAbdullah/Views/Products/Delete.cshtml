@@ -1,0 +1,54 @@
+﻿@model AliAbdullah.Models.Product
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">@ViewData["Title"]</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+        You are about to delete this product. This action cannot be undone.
+    </div>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-sm-3 text-muted">Name</div>
+                <div class="col-sm-9">@Model.Name</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 text-muted">Price</div>
+                <div class="col-sm-9">@Model.Price.ToString("C")</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 text-muted">Creation Date</div>
+                <div class="col-sm-9">@Model.CreationDate.ToString("yyyy-MM-dd")</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3 text-muted">Service Provider</div>
+                <div class="col-sm-9">
+                    @if (Model.ServiceProvider != null)
+                    {
+                        <a asp-controller="ServiceProviders" asp-action="Details" asp-route-id="@Model.ServiceProviderId">
+                            @Model.ServiceProvider.Name
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="d-flex gap-2">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>

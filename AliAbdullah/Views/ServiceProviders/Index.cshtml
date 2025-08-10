@@ -1,0 +1,85 @@
+﻿@model IEnumerable<AliAbdullah.Models.ServiceProvider>
+
+@{
+    ViewData["Title"] = "Service Providers";
+    var total = Model?.Count() ?? 0;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">@ViewData["Title"]</h1>
+        <div class="text-muted">@total provider@(total == 1 ? "" : "s")</div>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</div>
+
+<form method="get" asp-action="Index" class="mb-3">
+    <div class="input-group">
+        <input name="q" value="@ViewBag.Q" class="form-control" placeholder="Search by name" />
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(item.ContactEmail))
+                                {
+                                    <a href="mailto:@item.ContactEmail">@item.ContactEmail</a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(item.Phone))
+                                {
+                                    <a href="tel:@item.Phone">@item.Phone</a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a class="btn btn-outline-primary"
+                                       asp-controller="Products"
+                                       asp-action="ProductFilter"
+                                       asp-route-ServiceProviderId="@item.Id">Products</a>
+                                    <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                    <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">No service providers found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
